@@ -9,6 +9,7 @@ class Cliente(Pessoa, Endereco):
         self.categorias = ["Eletrônicos", "Roupas", "Livros", "Brinquedos", "Móveis"]
         self.vendedor = vendedor
         self.nome = nome
+        self.carrinho = [] 
 
     def cadastrar_clientes(self):
         print("\n || Comece seu cadastro ||")
@@ -58,37 +59,65 @@ class Cliente(Pessoa, Endereco):
         print(" Email ou senha inválidos ou ainda nao possui cadastro. \n")
         return False
 
-    def pesquisar_produtos(self):
-        print("\n|| Faça uma pesquisa para encontrar aquilo que procura ||")
+    def pesquisar_produtos(self, categoriaEscolhida):
+        produtosEncontrados = [produto for produto in self.vendedor.produtos if produto['categoria'] == categoriaEscolhida]
+
+        if produtosEncontrados:
+            print(f" Produtos da categoria: {categoriaEscolhida}")
+            for produto in produtosEncontrados:
+                print(f"Nome: {produto['nome']}, Preço: {produto['preco']}, Descrição: {produto['descricao']}")
+            return produtosEncontrados
+        else:
+            print(f" Nenhum produto encontrado na categoria {categoriaEscolhida}.")
+            return []
+
+    def add_carrinho(self):
+        print("\n|| Adicionar ao Carrinho ||")
         for i, categoria in enumerate(self.categorias, 1):
             print(f"{i}. {categoria}")
 
         while True:
             escolha = input(" Digite o número da categoria que está procurando: ")
             if escolha.isdigit() and 1 <= int(escolha) <= len(self.categorias):
-                categoriaEscolhida = self.categorias[int(escolha) - 1]
+                categoriaEscolhida = self.categorias[int(escolha) - 1].lower()
                 break
             else:
                 print(" Escolha inválida, tente novamente. ")
 
-        produtosEncontrados = [produto for produto in self.vendedor.produtos if produto['categoria'] == categoriaEscolhida]
-
-        if produtosEncontrados:
-            print(f" Produtos da categoria: {categoriaEscolhida}")
+        produtosEncontrados = self.pesquisar_produtos(categoriaEscolhida)
+        if not produtosEncontrados:
+            return
+        while True:
+            escolha_produto = input("\nDigite o nome do produto que deseja adicionar ao carrinho (ou 'sair' para encerrar): ")
+            if escolha_produto.lower() == 'sair':
+                break
             for produto in produtosEncontrados:
-                print(f"Nome: {produto['nome']}, Preço: {produto['preco']}, Descrição: {produto['descricao']} \n")
+                if produto['nome'].lower() == escolha_produto.lower():
+                    self.carrinho.append(produto)
+                    print(f"Produto '{produto['nome']}' adicionado ao carrinho.")
+                    break
+            else:
+                print("Produto não encontrado na lista. Tente novamente.")
+
+    def ver_carrinho(self):
+        if self.carrinho:
+            print("\n|| Produtos no Carrinho ||")
+            for produto in self.carrinho:
+                print(f"Nome: {produto['nome']}, Preço: {produto['preco']}, Descrição: {produto['descricao']}")
         else:
-            print(f" Nenhum produto encontrado na categoria {categoriaEscolhida}.")
+            print("\nSeu carrinho está vazio.")
 
     def menu_cliente(self, nome):
         while True:
             print(f"\n || Bem-vindo, {nome} ||")
-            print(" 1. Pesquisar produtos\n 2. Sair")
+            print(" 1. Adicionar ao carrinho\n 2. Ver o seu carrinho\n 3. Sair")
             opcao = input(" Digite a opção desejada: ")
 
             if opcao == "1":
-                self.pesquisar_produtos()
+                self.add_carrinho()
             elif opcao == "2":
+                self.ver_carrinho()
+            elif opcao == "3":
                 break
             else:
                 print(" Opção inválida.\n")
