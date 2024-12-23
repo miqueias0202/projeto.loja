@@ -6,7 +6,7 @@ class Vendedor(Pessoa, Lojas):
         Pessoa.__init__(self, nome, telefone, email, cpf, senha)
         Lojas.__init__(self, nomeLoja, senha)
         self.vendedores = []
-        self.produtos = produtos 
+        self.produtos = produtos
         self.categorias = ["Eletrônicos", "Roupas", "Livros", "Brinquedos", "Móveis"]
         self.nome = nome  
 
@@ -46,7 +46,7 @@ class Vendedor(Pessoa, Lojas):
 
     def add_produto(self):
         print("\n|| Adicionar Produto ||")
-        nome_produto = input("Digite o nome do produto: ")
+        nome_produto = input("Digite o nome do produto: ").lower()
         while True:
             preco = input("Digite o preço do produto: ")
             if preco.replace('.', '', 1).isdigit():
@@ -61,7 +61,7 @@ class Vendedor(Pessoa, Lojas):
         while True:
             escolha_categoria = input("Digite o número da categoria: ")
             if escolha_categoria.isdigit() and 1 <= int(escolha_categoria) <= len(self.categorias):
-                categoria_produto = self.categorias[int(escolha_categoria) - 1]
+                categoria_produto = self.categorias[int(escolha_categoria) - 1].lower()
                 break
             else:
                 print("Escolha inválida. Tente novamente.")
