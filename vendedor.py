@@ -77,24 +77,85 @@ class Vendedor(Pessoa, Lojas):
         self.produtos.append(produto)
         print("Produto adicionado com sucesso!")
 
-    def apresentar_produtos(self):
-        if not self.produtos:
-            print(" Não há produtos ainda. ")
+    def apresentar_produtos(self, categoria=None):
+        if categoria:
+            produtos_filtrados = [produto for produto in self.produtos if produto['categoria'] == categoria]
+            if produtos_filtrados:
+                for produto in produtos_filtrados:
+                    print(f"Nome: {produto['nome']}\nPreço: {produto['preco']}\nDescrição: {produto['descricao']}\nCategoria: {produto['categoria']}\n")
+                return produtos_filtrados
+            else:
+                print(f"Não há produtos na categoria {categoria}.")
+                return []
         else:
-            for produto in self.produtos:
-                print(f"Nome: {produto['nome']}\nPreço: {produto['preco']}\nDescrição: {produto['descricao']}\nCategoria: {produto['categoria']}\n")
- 
+            if not self.produtos:
+                print("Não há produtos ainda.")
+                return []
+            else:
+                for produto in self.produtos:
+                    print(f"Nome: {produto['nome']}\nPreço: {produto['preco']}\nDescrição: {produto['descricao']}\nCategoria: {produto['categoria']}\n")
+                return self.produtos
+
+    def altera_produtos(self):
+        print("\n|| Gerenciar Produtos ||")
+        for i, categoria in enumerate(self.categorias, 1):
+            print(f"{i}. {categoria}")
+
+        while True:
+            escolha = input("Digite o número da categoria do produto: ")
+            if escolha.isdigit() and 1 <= int(escolha) <= len(self.categorias):
+                categoriaEscolhida = self.categorias[int(escolha) - 1].lower()
+                break
+            else:
+                print("Escolha inválida, tente novamente.")
+
+        produtosEncontrados = self.apresentar_produtos(categoriaEscolhida)
+        if not produtosEncontrados:
+            return
+        
+        while True:
+            escolha_produto = input("\nDigite o nome do produto que deseja alterar ou apagar (ou 'sair' para encerrar): ")
+            if escolha_produto.lower() == 'sair':
+                break
+            for produto in produtosEncontrados:
+                if produto['nome'].lower() == escolha_produto.lower():
+                    print(f"\n1. Alterar Produto '{produto['nome']}'")
+                    print("2. Apagar Produto")
+                    escolha_acao = input("Escolha a ação desejada (1 ou 2): ")
+
+                    if escolha_acao == '1':
+                        novo_nome = input("Digite o novo nome do produto (ou pressione Enter para manter o atual): ").lower()
+                        novo_preco = input("Digite o novo preço do produto (ou pressione Enter para manter o atual): ")
+                        nova_descricao = input("Digite a nova descrição do produto (ou pressione Enter para manter a atual): ")
+
+                        if novo_nome:
+                            produto['nome'] = novo_nome
+                        if novo_preco.replace('.', '', 1).isdigit():
+                            produto['preco'] = novo_preco
+                        if nova_descricao:
+                            produto['descricao'] = nova_descricao
+
+                        print("Produto alterado com sucesso")
+                    elif escolha_acao == '2':
+                        self.produtos.remove(produto)
+                        print("Produto apagado com sucesso")
+                    return
+            else:
+                print("Produto não encontrado. Tente novamente.")
+
     def menu_vendedor(self, nome):
         while True:
             print(f"\n|| Bem-vindo Vendedor: {nome} ! ||")
-            print("1. Adicionar Produto\n2. Apresentar produtos\n3. Sair")
-            opcao = input(" Escolha uma opção: ")
+            print("1. Adicionar Produto\n2. Apresentar produtos\n3. Gerenciar Produto\n4. Sair")
+            opcao = input("Escolha uma opção: ")
 
             if opcao == "1":
                 self.add_produto()
             elif opcao == "2":
                 self.apresentar_produtos()
             elif opcao == "3":
+                self.altera_produtos()
+            elif opcao == "4":
                 break
             else:
-                print(" Opção inválida.\n")
+                print("Opção inválida.\n")
