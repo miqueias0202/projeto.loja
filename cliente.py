@@ -9,7 +9,8 @@ class Cliente(Pessoa, Endereco):
         self.categorias = ["Eletrônicos", "Roupas", "Livros", "Brinquedos", "Móveis"]
         self.vendedor = vendedor
         self.nome = nome
-        self.carrinho = [] 
+        self.carrinho = []
+        self.money = 1500
 
     def cadastrar_clientes(self):
         print("\n || Comece seu cadastro ||")
@@ -46,6 +47,7 @@ class Cliente(Pessoa, Endereco):
         novoCliente = Cliente(nome, telefone, email, cpf, senha, cep, bairro, rua, numero, self.vendedor)
         self.clientes.append(novoCliente)
         print(" Cliente cadastrado com sucesso! ")
+        print(f"Você recebeu um crédito de R$800,00 para utilizar nas suas compras!")
 
     def login(self):
         print("\n|| Login ||")
@@ -71,8 +73,8 @@ class Cliente(Pessoa, Endereco):
             print(f" Nenhum produto encontrado na categoria {categoriaEscolhida}.")
             return []
 
-    def add_carrinho(self):
-        print("\n|| Adicionar ao Carrinho ||")
+    def pesquise(self):
+        print("\n|| Pesquise e adicione compras ao seu carrinho ||")
         for i, categoria in enumerate(self.categorias, 1):
             print(f"{i}. {categoria}")
 
@@ -107,17 +109,47 @@ class Cliente(Pessoa, Endereco):
         else:
             print("\nSeu carrinho está vazio.")
 
+    def selecionar_compra(self):
+        itens_selecionados = []
+        while True:
+            self.ver_carrinho()
+            escolha = input("\n Digite o nome dos itens que deseja comprar (ou 'sair' para encerrar): ")
+            if escolha.lower() == 'sair':
+                break
+            for item in self.carrinho:
+                if item['nome'].lower() == escolha.lower():
+                    itens_selecionados.append(item)
+                    print(f"Item '{item['nome']}' selecionado para compra.")
+                    break
+            else:
+                print("Produto não encontrado. Tente novamente.")
+        return itens_selecionados
+            
+    def realizar_compra(self):
+        itens_comprar = self.selecionar_compra()
+        preco_comprar = sum(float(produto['preco']) for produto in itens_comprar)
+        if preco_comprar <= self.money:
+            self.money -= preco_comprar
+            for item in itens_comprar:
+                self.carrinho.remove(item)
+            print(f"Compra finalizada com sucesso! Seu crédito atual é de R${self.money:.2f}.") 
+        else: 
+            print(f"Crédito insuficiente. Total da compra: R${preco_comprar:.2f}, seu crédito: R${self.money:.2f}.")
+
     def menu_cliente(self, nome):
         while True:
             print(f"\n || Bem-vindo, {nome} ||")
-            print(" 1. Adicionar ao carrinho\n 2. Ver o seu carrinho\n 3. Sair")
+            print(f"Seu dinheiro total em sua conta é: {self.money}")
+            print("\n1. Pesquise\n 2. Ver o seu carrinho\n 3. Realizar compra\n 4. Sair")
             opcao = input(" Digite a opção desejada: ")
 
             if opcao == "1":
-                self.add_carrinho()
+                self.pesquise()
             elif opcao == "2":
                 self.ver_carrinho()
             elif opcao == "3":
+                self.realizar_compra()
+            elif opcao == "4":
                 break
             else:
                 print(" Opção inválida.\n")
