@@ -6,11 +6,10 @@ class Cliente(Pessoa, Endereco):
         Pessoa.__init__(self, nome, telefone, email, cpf, senha)
         Endereco.__init__(self, cep, bairro, rua, numero)
         self.clientes = []
-        self.categorias = ["Eletrônicos", "Roupas", "Livros", "Brinquedos", "Móveis"]
+        self.categorias = ["Vestidos", "Camisas", "Calças", "Shorts", "Saias"]
         self.vendedor = vendedor
         self.nome = nome
         self.carrinho = []
-        self.money = 1500
 
     def cadastrar_clientes(self):
         print("\n || Comece seu cadastro ||")
@@ -47,7 +46,6 @@ class Cliente(Pessoa, Endereco):
         novoCliente = Cliente(nome, telefone, email, cpf, senha, cep, bairro, rua, numero, self.vendedor)
         self.clientes.append(novoCliente)
         print(" Cliente cadastrado com sucesso! ")
-        print(f"Você recebeu um crédito de R$800,00 para utilizar nas suas compras!")
 
     def login(self):
         print("\n|| Login ||")
@@ -61,16 +59,16 @@ class Cliente(Pessoa, Endereco):
         print(" Email ou senha inválidos ou ainda nao possui cadastro. \n")
         return False
 
-    def pesquisar_produtos(self, categoriaEscolhida):
-        produtosEncontrados = [produto for produto in self.vendedor.produtos if produto['categoria'] == categoriaEscolhida]
+    def pesquisar_produtos(self, classificacaoEscolhida):
+        produtosEncontrados = [produto for produto in self.vendedor.produtos if produto['classificacao'] == classificacaoEscolhida]
 
         if produtosEncontrados:
-            print(f" Produtos da categoria: {categoriaEscolhida}")
+            print(f" Produtos da categoria: {classificacaoEscolhida}")
             for produto in produtosEncontrados:
                 print(f"Nome: {produto['nome']}, Preço: {produto['preco']}, Descrição: {produto['descricao']}")
             return produtosEncontrados
         else:
-            print(f" Nenhum produto encontrado na categoria {categoriaEscolhida}.")
+            print(f" Nenhum produto encontrado na categoria {classificacaoEscolhida}.")
             return []
 
     def pesquise(self):
@@ -108,39 +106,11 @@ class Cliente(Pessoa, Endereco):
                 print(f"Nome: {produto['nome']}, Preço: {produto['preco']}, Descrição: {produto['descricao']}")
         else:
             print("\nSeu carrinho está vazio.")
-
-    def selecionar_compra(self):
-        itens_selecionados = []
-        while True:
-            self.ver_carrinho()
-            escolha = input("\n Digite o nome dos itens que deseja comprar (ou 'sair' para encerrar): ")
-            if escolha.lower() == 'sair':
-                break
-            for item in self.carrinho:
-                if item['nome'].lower() == escolha.lower():
-                    itens_selecionados.append(item)
-                    print(f"Item '{item['nome']}' selecionado para compra.")
-                    break
-            else:
-                print("Produto não encontrado. Tente novamente.")
-        return itens_selecionados
             
-    def realizar_compra(self):
-        itens_comprar = self.selecionar_compra()
-        preco_comprar = sum(float(produto['preco']) for produto in itens_comprar)
-        if preco_comprar <= self.money:
-            self.money -= preco_comprar
-            for item in itens_comprar:
-                self.carrinho.remove(item)
-            print(f"Compra finalizada com sucesso! Seu crédito atual é de R${self.money:.2f}.") 
-        else: 
-            print(f"Crédito insuficiente. Total da compra: R${preco_comprar:.2f}, seu crédito: R${self.money:.2f}.")
-
     def menu_cliente(self, nome):
         while True:
             print(f"\n || Bem-vindo, {nome} ||")
-            print(f"Seu dinheiro total em sua conta é: {self.money}")
-            print("\n1. Pesquise\n 2. Ver o seu carrinho\n 3. Realizar compra\n 4. Sair")
+            print("\n 1. Pesquise\n 2. Ver o seu carrinho\n 3. Sair")
             opcao = input(" Digite a opção desejada: ")
 
             if opcao == "1":
@@ -148,8 +118,6 @@ class Cliente(Pessoa, Endereco):
             elif opcao == "2":
                 self.ver_carrinho()
             elif opcao == "3":
-                self.realizar_compra()
-            elif opcao == "4":
                 break
             else:
                 print(" Opção inválida.\n")
