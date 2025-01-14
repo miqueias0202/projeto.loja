@@ -1,13 +1,13 @@
 from classes import Pessoa, Lojas
 import getpass
 
-class Vendedor(Pessoa, Lojas):
+class Vendedor(Pessoa, Lojas): 
     def __init__(self, nome, telefone, email, cpf, senha, nomeLoja, produtos):
         Pessoa.__init__(self, nome, telefone, email, cpf, senha)
         Lojas.__init__(self, nomeLoja, senha)
         self.vendedores = []
         self.produtos = produtos
-        self.categorias = ["Eletrônicos", "Roupas", "Livros", "Brinquedos", "Móveis"]
+        self.classificacao= ["Vestidos", "Camisas", "Calças", "Shorts", "Saias"]
         self.nome = nome  
 
     def cadastrar_vendedores(self):
@@ -49,19 +49,19 @@ class Vendedor(Pessoa, Lojas):
         nome_produto = input("Digite o nome do produto: ").lower()
         while True:
             preco = input("Digite o preço do produto: ")
-            if preco.replace('.', '', 1).isdigit():
+            if preco.isdigit():
                 break
             else:
                 print(" Preço inválido ")
-                
-        print("\n Escolha uma categoria para o produto: ")
-        for i, categoria in enumerate(self.categorias, 1):
-            print(f"{i}. {categoria}")
+
+        print("\n Escolha o tipo de produto : ")
+        for i, classificacao in enumerate(self.classificacao, 1):
+            print(f"{i}. {classificacao}")
 
         while True:
-            escolha_categoria = input("Digite o número da categoria: ")
-            if escolha_categoria.isdigit() and 1 <= int(escolha_categoria) <= len(self.categorias):
-                categoria_produto = self.categorias[int(escolha_categoria) - 1].lower()
+            escolha_classificacao = input("Digite o número da categoria: ")
+            if escolha_classificacao.isdigit() and 1 <= int(escolha_classificacao) <= len(self.classificacao):
+                classificacao = self.classificacao[int(escolha_classificacao) - 1].lower()
                 break
             else:
                 print("Escolha inválida. Tente novamente.")
@@ -72,20 +72,20 @@ class Vendedor(Pessoa, Lojas):
             'nome': nome_produto,
             'preco': preco,
             'descricao': descricao_produto,
-            'categoria': categoria_produto
+            'classificacao': classificacao
         }
         self.produtos.append(produto)
         print("Produto adicionado com sucesso!")
 
-    def apresentar_produtos(self, categoria=None):
-        if categoria:
-            produtos_filtrados = [produto for produto in self.produtos if produto['categoria'] == categoria]
+    def apresentar_produtos(self, classificacao=None):
+        if classificacao:
+            produtos_filtrados = [produto for produto in self.produtos if produto['classificacao'] == classificacao]
             if produtos_filtrados:
                 for produto in produtos_filtrados:
-                    print(f"Nome: {produto['nome']}\nPreço: {produto['preco']}\nDescrição: {produto['descricao']}\nCategoria: {produto['categoria']}\n")
+                    print(f"Nome: {produto['nome']}\nPreço: {produto['preco']}\nDescrição: {produto['descricao']}\nclassificacao: {produto['classificacao']}\n")
                 return produtos_filtrados
             else:
-                print(f"Não há produtos na categoria {categoria}.")
+                print(f"Não há produtos na classificacao {classificacao}.")
                 return []
         else:
             if not self.produtos:
@@ -93,23 +93,23 @@ class Vendedor(Pessoa, Lojas):
                 return []
             else:
                 for produto in self.produtos:
-                    print(f"Nome: {produto['nome']}\nPreço: {produto['preco']}\nDescrição: {produto['descricao']}\nCategoria: {produto['categoria']}\n")
+                    print(f"Nome: {produto['nome']}\nPreço: {produto['preco']}\nDescrição: {produto['descricao']}\nclassificacao: {produto['classificacao']}\n")
                 return self.produtos
 
     def altera_produtos(self):
         print("\n|| Gerenciar Produtos ||")
-        for i, categoria in enumerate(self.categorias, 1):
-            print(f"{i}. {categoria}")
+        for i, classificacao in enumerate(self.classificacao, 1):
+            print(f"{i}. {classificacao}")
 
         while True:
-            escolha = input("Digite o número da categoria do produto: ")
-            if escolha.isdigit() and 1 <= int(escolha) <= len(self.categorias):
-                categoriaEscolhida = self.categorias[int(escolha) - 1].lower()
+            escolha = input("Digite o número da classificaçao do produto: ")
+            if escolha.isdigit() and 1 <= int(escolha) <= len(self.classificacao):
+                classificacaoEscolhida = self.classificacao[int(escolha) - 1].lower()
                 break
             else:
                 print("Escolha inválida, tente novamente.")
 
-        produtosEncontrados = self.apresentar_produtos(categoriaEscolhida)
+        produtosEncontrados = self.apresentar_produtos(classificacaoEscolhida)
         if not produtosEncontrados:
             return
         
@@ -130,7 +130,7 @@ class Vendedor(Pessoa, Lojas):
 
                         if novo_nome:
                             produto['nome'] = novo_nome
-                        if novo_preco.replace('.', '', 1).isdigit():
+                        if novo_preco.isdigit():
                             produto['preco'] = novo_preco
                         if nova_descricao:
                             produto['descricao'] = nova_descricao
@@ -142,19 +142,21 @@ class Vendedor(Pessoa, Lojas):
                     return
             else:
                 print("Produto não encontrado. Tente novamente.")
-
+    
     def menu_vendedor(self, nome):
         while True:
             print(f"\n|| Bem-vindo Vendedor: {nome} ! ||")
             print("1. Adicionar Produto\n2. Apresentar produtos\n3. Gerenciar Produto\n4. Sair")
             opcao = input("Escolha uma opção: ")
-
             if opcao == "1":
                 self.add_produto()
+            
             elif opcao == "2":
                 self.apresentar_produtos()
+            
             elif opcao == "3":
                 self.altera_produtos()
+            
             elif opcao == "4":
                 break
             else:
