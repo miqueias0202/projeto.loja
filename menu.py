@@ -3,7 +3,7 @@ from vendedor import Vendedor
 
 def menu_principal(cliente, vendedor):
     while True:
-        print("\n|| Bem-vindo à Loja ||")
+        print("\n|| Bem-vindo a Total Store ||")
         print("1. Login Cliente\n2. Cadastrar Cliente\n3. Cadastrar Vendedor\n4. Login Vendedor\n5. Sair")
         opcao = input("Escolha uma opção: ")
 
@@ -17,7 +17,7 @@ def menu_principal(cliente, vendedor):
         elif opcao == "4":
             vendedor.login_vendedores()
         elif opcao == "5":
-            print("Obrigado por visitar a loja. Até logo!\n")
+            print("Obrigado por visitar a Total Store. Até logo!\n")
             break
         else:
             print("Opção inválida.\n")
